@@ -1,0 +1,252 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+// ── Curriculum hierarchy ─────────────────────────────────────────────────────
+
+model Subject {
+  id            String   @id @default(cuid())
+  name          String
+  qualification String
+  examBoard     String
+  specCode      String?
+  tier          String
+  colour        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  disciplines   Discipline[]
+  topics        Topic[]
+  sessions      Session[]
+  timerLogs     TimerLog[]
+  conversations Conversation[]
+  resources     Resource[]
+  exams         Exam[]
+  goals         Goals[]
+  decks         Deck[]
+}
+
+model Discipline {
+  id        String @id @default(cuid())
+  subjectId String
+  name      String
+  order     Int    @default(0)
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topics  Topic[]
+}
+
+model Topic {
+  id           String  @id @default(cuid())
+  subjectId    String
+  disciplineId String?
+  name         String
+  specRef      String?
+  order        Int     @default(0)
+
+  subject       Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  discipline    Discipline?   @relation(fields: [disciplineId], references: [id], onDelete: SetNull)
+  subtopics     Subtopic[]
+  sessions      Session[]
+  timerLogs     TimerLog[]
+  conversations Conversation[]
+  resources     Resource[]
+}
+
+model Subtopic {
+  id      String  @id @default(cuid())
+  topicId String
+  name    String
+  specRef String?
+  order   Int     @default(0)
+
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  decks     Deck[]
+  resources Resource[]
+}
+
+// ── Flashcard system ─────────────────────────────────────────────────────────
+
+model Deck {
+  id         String  @id @default(cuid())
+  subjectId  String?
+  subtopicId String?
+  name       String
+  source     String  @default("manual")
+
+  subject  Subject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subtopic Subtopic? @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
+  cards    Card[]
+}
+
+model Card {
+  id               String    @id @default(cuid())
+  deckId           String
+  front            String
+  back             String
+  tags             String    @default("[]")
+  ease             Float     @default(2.5)
+  interval         Int       @default(0)
+  dueAt            DateTime  @default(now())
+  lastReviewedAt   DateTime?
+  aiGenerated      Boolean   @default(false)
+  sourceResourceId String?
+  frontImage       String?
+  backImage        String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  deck           Deck      @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  sourceResource Resource? @relation(fields: [sourceResourceId], references: [id], onDelete: SetNull)
+  reviews        Review[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  cardId     String
+  rating     Int
+  reviewedAt DateTime @default(now())
+  durationMs Int      @default(0)
+
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+}
+
+// ── Exams ────────────────────────────────────────────────────────────────────
+
+model Exam {
+  id          String    @id @default(cuid())
+  scopeType   String
+  scopeId     String
+  subjectId   String
+  length      Int
+  mode        String    @default("mixed")
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  subject   Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  questions ExamQuestion[]
+}
+
+model ExamQuestion {
+  id           String  @id @default(cuid())
+  examId       String
+  prompt       String
+  type         String
+  marks        Int
+  markScheme   String
+  myAnswer     String?
+  awardedMarks Int?
+  aoBreakdown  String?
+  feedback     String?
+  order        Int     @default(0)
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+}
+
+// ── Planner / sessions ───────────────────────────────────────────────────────
+
+model Session {
+  id             String    @id @default(cuid())
+  subjectId      String
+  topicId        String?
+  plannedAt      DateTime
+  durationMin    Int
+  status         String    @default("planned")
+  notes          String?
+  recurrenceRule String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  subject   Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic     Topic?     @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  timerLogs TimerLog[]
+}
+
+model TimerLog {
+  id         String    @id @default(cuid())
+  sessionId  String?
+  subjectId  String
+  topicId    String?
+  resourceId String?
+  startedAt  DateTime  @default(now())
+  endedAt    DateTime?
+  mode       String    @default("pomodoro")
+
+  session  Session?  @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  subject  Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic    Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  resource Resource? @relation(fields: [resourceId], references: [id], onDelete: SetNull)
+}
+
+// ── AI tutor ─────────────────────────────────────────────────────────────────
+
+model Conversation {
+  id         String   @id @default(cuid())
+  subjectId  String
+  topicId    String?
+  resourceId String?
+  title      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  subject  Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic    Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  resource Resource? @relation(fields: [resourceId], references: [id], onDelete: SetNull)
+  messages Message[]
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+// ── Resources ────────────────────────────────────────────────────────────────
+
+model Resource {
+  id            String   @id @default(cuid())
+  subjectId     String
+  topicId       String?
+  subtopicId    String?
+  title         String
+  url           String
+  sourceSite    String?
+  type          String   @default("other")
+  description   String?
+  tags          String   @default("[]")
+  used          Boolean  @default(false)
+  unreachable   Boolean  @default(false)
+  extractedText    String?
+  extractionOutput String?
+  confidence       String   @default("manual")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subject       Subject       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic         Topic?        @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  subtopic      Subtopic?     @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
+  cards         Card[]
+  timerLogs     TimerLog[]
+  conversations Conversation[]
+}
+
+model Goals {
+  id                   String   @id @default("singleton")
+  studyMinutesPerDay   Int      @default(60)
+  sessionLengthMinutes Int      @default(25)
+  flashcardsPerDay     Int      @default(20)
+  weeklyStudyDays      Int      @default(5)
+  focusSubjectId       String?
+  updatedAt            DateTime @updatedAt
+
+  focusSubject Subject? @relation(fields: [focusSubjectId], references: [id], onDelete: SetNull)
+}
