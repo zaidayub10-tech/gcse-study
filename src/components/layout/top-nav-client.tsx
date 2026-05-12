@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { NAV_ITEMS } from "@/config/nav"
@@ -48,11 +49,15 @@ export function TopNavClient({
           href="/"
           className="flex items-center gap-2 shrink-0 mr-2 select-none"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-base leading-none shadow-sm">
-            📚
-          </span>
+          <Image
+            src="/logo.png"
+            alt="recalledai logo"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+          />
           <span className="font-bold text-sidebar-foreground text-sm tracking-tight hidden sm:block">
-            GCSE Study
+            recalledai
           </span>
         </Link>
 
@@ -167,10 +172,14 @@ export function TopNavClient({
           <SheetTitle className="sr-only">Navigation</SheetTitle>
 
           <div className="flex items-center h-14 px-4 border-b border-sidebar-border gap-2 shrink-0">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-base leading-none">
-              📚
-            </span>
-            <span className="font-bold text-sidebar-foreground">GCSE Study</span>
+            <Image
+              src="/logo.png"
+              alt="recalledai logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
+            <span className="font-bold text-sidebar-foreground">recalledai</span>
           </div>
 
           <ScrollArea className="h-[calc(100vh-7rem)]">

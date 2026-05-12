@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "GCSE Study",
-  description: "Personal GCSE revision app",
+  title: "recalledai",
+  description: "AI-powered GCSE revision platform",
 }
 
 export default function RootLayout({
