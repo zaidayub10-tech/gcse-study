@@ -273,22 +273,24 @@ function SpecBuilder({
           </div>
 
           {/* Topic list — grouped by paper */}
-          <div className="max-h-96 overflow-y-auto rounded-lg border border-border bg-background">
+          <div className="max-h-[28rem] overflow-y-auto rounded-lg border border-border bg-background">
             {hasPapers ? (
               paperGroups.map(({ paper, indices }, groupIdx) => {
                 const colour = PAPER_COLOURS[groupIdx % PAPER_COLOURS.length]
                 const groupTopics = indices.map((i) => topics![i])
                 const allGroupSelected = groupTopics.every((t) => t.selected && t.subtopics.every((s) => s.selected))
+                const selectedInGroup = groupTopics.filter((t) => t.selected).length
                 return (
-                  <div key={paper}>
+                  <div key={paper} className="border-b border-border last:border-0">
                     {/* Paper header */}
-                    <div className={cn("flex items-center gap-2 px-3 py-2 border-b border-border sticky top-0 z-10 bg-background", colour.bg)}>
-                      <span className={cn("text-xs font-bold tracking-wide flex-1")}>{paper}</span>
-                      <span className="text-xs opacity-70">{indices.length} topic{indices.length !== 1 ? "s" : ""}</span>
+                    <div className={cn("flex items-center gap-2 px-3 py-2.5 sticky top-0 z-10", colour.bg)}>
+                      <div className={cn("h-2 w-2 rounded-full shrink-0", colour.bg.includes("blue") ? "bg-blue-500" : colour.bg.includes("emerald") ? "bg-emerald-500" : colour.bg.includes("amber") ? "bg-amber-500" : colour.bg.includes("rose") ? "bg-rose-500" : "bg-violet-500")} />
+                      <span className="text-xs font-bold flex-1">{paper}</span>
+                      <span className="text-[10px] opacity-60 font-medium">{selectedInGroup}/{indices.length} topics</span>
                       <button
                         type="button"
                         onClick={() => togglePaperGroup(indices, !allGroupSelected)}
-                        className="text-[10px] font-semibold opacity-80 hover:opacity-100 underline underline-offset-2"
+                        className="text-[10px] font-semibold opacity-70 hover:opacity-100 transition-opacity px-1.5 py-0.5 rounded border border-current"
                       >
                         {allGroupSelected ? "Deselect" : "Select all"}
                       </button>
@@ -298,27 +300,31 @@ function SpecBuilder({
                     {indices.map((i) => {
                       const topic = topics![i]
                       return (
-                        <div key={i} className="border-b border-border last:border-0">
-                          <div className={cn("flex items-center gap-2 px-3 py-2 hover:bg-muted/40 transition-colors", !topic.selected && "opacity-50")}>
-                            <button type="button" onClick={() => toggleExpand(i)} className="shrink-0 text-muted-foreground hover:text-foreground">
+                        <div key={i} className="border-t border-border/50">
+                          <div className={cn("flex items-center gap-2 px-3 py-2 hover:bg-muted/40 transition-colors", !topic.selected && "opacity-40")}>
+                            <button type="button" onClick={() => toggleExpand(i)} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors">
                               {topic.expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
                             </button>
-                            <div onClick={() => toggleTopic(i)} className={cn("h-4 w-4 shrink-0 rounded border border-primary flex items-center justify-center cursor-pointer transition-colors", topic.selected ? "bg-primary" : "bg-transparent")}>
+                            <div onClick={() => toggleTopic(i)} className={cn("h-4 w-4 shrink-0 rounded border-2 border-primary flex items-center justify-center cursor-pointer transition-all", topic.selected ? "bg-primary" : "bg-transparent")}>
                               {topic.selected && <Check className="h-2.5 w-2.5 text-primary-foreground" />}
                             </div>
-                            <span className="text-xs font-medium flex-1">{topic.name}</span>
-                            {topic.specRef && <span className="text-xs text-muted-foreground font-mono shrink-0">{topic.specRef}</span>}
-                            <span className="text-xs text-muted-foreground shrink-0">{topic.subtopics.length} sub</span>
+                            <span className="text-xs font-semibold flex-1">{topic.name}</span>
+                            {topic.specRef && <span className="text-[10px] text-muted-foreground font-mono shrink-0 bg-muted px-1 rounded">{topic.specRef}</span>}
+                            <span className="text-[10px] text-muted-foreground shrink-0">{topic.subtopics.filter(s => s.selected).length}/{topic.subtopics.length}</span>
                           </div>
-                          {topic.expanded && topic.subtopics.map((sub, j) => (
-                            <div key={j} className={cn("flex items-center gap-2 pl-9 pr-3 py-1.5 bg-muted/20 hover:bg-muted/40 transition-colors cursor-pointer", !sub.selected && "opacity-50")} onClick={() => toggleSubtopic(i, j)}>
-                              <div className={cn("h-3.5 w-3.5 shrink-0 rounded border border-primary/70 flex items-center justify-center transition-colors", sub.selected ? "bg-primary/70" : "bg-transparent")}>
-                                {sub.selected && <Check className="h-2 w-2 text-primary-foreground" />}
-                              </div>
-                              <span className="text-xs flex-1">{sub.name}</span>
-                              {sub.specRef && <span className="text-xs text-muted-foreground font-mono shrink-0">{sub.specRef}</span>}
+                          {topic.expanded && (
+                            <div className="pb-1">
+                              {topic.subtopics.map((sub, j) => (
+                                <div key={j} className={cn("flex items-center gap-2 pl-10 pr-3 py-1.5 hover:bg-muted/30 transition-colors cursor-pointer", !sub.selected && "opacity-40")} onClick={() => toggleSubtopic(i, j)}>
+                                  <div className={cn("h-3 w-3 shrink-0 rounded border border-primary/60 flex items-center justify-center transition-all", sub.selected ? "bg-primary/60" : "bg-transparent")}>
+                                    {sub.selected && <Check className="h-2 w-2 text-primary-foreground" />}
+                                  </div>
+                                  <span className="text-xs flex-1 text-muted-foreground">{sub.name}</span>
+                                  {sub.specRef && <span className="text-[10px] text-muted-foreground/60 font-mono shrink-0">{sub.specRef}</span>}
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          )}
                         </div>
                       )
                     })}

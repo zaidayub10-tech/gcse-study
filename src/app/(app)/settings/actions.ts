@@ -30,18 +30,18 @@ export async function generateSubjectSpec(data: {
     const msg = await ai.messages.create({
       model: "claude-haiku-4-5",
       max_tokens: 2500,
-      system: `You are an expert on UK GCSE and iGCSE specifications. You know the exact topic structures for all major exam boards (AQA, Edexcel, OCR, WJEC, Eduqas, CCEA, Cambridge International). Always respond with ONLY valid JSON — no markdown, no code blocks, no extra text.`,
+      system: `You are an expert on UK GCSE and iGCSE specifications. You know the exact topic structures, paper splits, and spec references for all major exam boards (AQA, Edexcel, OCR, WJEC, Eduqas, CCEA, Cambridge International). Always respond with ONLY valid JSON — no markdown, no code blocks, no extra text.`,
       messages: [
         {
           role: "user",
-          content: `Generate the complete topic list for ${data.qualification}${scienceLabel} ${data.name} (${data.examBoard}${data.specCode ? `, spec code: ${data.specCode}` : ""}), ${data.tier} tier.${data.scienceType === "combined" ? "\nIMPORTANT: This is Combined Science (Double Award / Trilogy). Include all Biology, Chemistry and Physics topics as they appear in the combined spec. Group papers as Biology Paper 1, Biology Paper 2, Chemistry Paper 1, Chemistry Paper 2, Physics Paper 1, Physics Paper 2." : ""}${data.scienceType === "triple" ? "\nIMPORTANT: This is Triple Science (separate GCSE). Generate topics for this specific science only (Biology OR Chemistry OR Physics as named). Include all topics for this individual science." : ""}
+          content: `Generate the complete topic list for ${data.qualification}${scienceLabel} ${data.name} (${data.examBoard}${data.specCode ? `, spec code: ${data.specCode}` : ""}), ${data.tier} tier.${data.scienceType === "combined" ? "\nIMPORTANT: This is Combined Science (Double Award / Trilogy). Include all Biology, Chemistry and Physics topics. Use paper names like \"Biology Paper 1\", \"Biology Paper 2\", \"Chemistry Paper 1\", \"Chemistry Paper 2\", \"Physics Paper 1\", \"Physics Paper 2\"." : ""}${data.scienceType === "triple" ? "\nIMPORTANT: This is Triple/Separate Science. Generate topics only for the specific science named (e.g. Biology only, Chemistry only, or Physics only). Use \"Paper 1\" and \"Paper 2\" as paper names." : ""}
 
 Respond with ONLY this JSON:
 {
   "specCode": "the official specification code (e.g. 8461, 1BI0, J247)",
   "topics": [
     {
-      "name": "Topic name as in the specification",
+      "name": "Topic name exactly as in the specification",
       "specRef": "e.g. 4.1 or Section A",
       "paper": "Paper 1",
       "subtopics": [
@@ -51,14 +51,20 @@ Respond with ONLY this JSON:
   ]
 }
 
-Rules:
-- Match the real ${data.examBoard} specification structure as closely as possible
-- Include all major topics and their key subtopics
-- specRef values should follow the numbering used in the real specification
-- For Higher tier: include Higher-only content with subtopics marked "(H)" if applicable
-- Aim for 6-14 topics, each with 3-8 subtopics
-- Keep topic and subtopic names concise but clear
-- IMPORTANT: Set the "paper" field to the correct exam paper for each topic (e.g. "Paper 1", "Paper 2", "Paper 3"). This must reflect the REAL ${data.examBoard} specification — e.g. for AQA Biology, Topics 1-4 are Paper 1 and Topics 5-7 are Paper 2. If a topic appears in both papers, set paper to "Both". If the subject has no paper split (e.g. coursework-based), omit the field.`,
+CRITICAL RULES — follow these exactly:
+1. The "paper" field is REQUIRED for every topic — never omit it
+2. Use the REAL paper split from the actual ${data.examBoard} specification. Examples:
+   - AQA Biology: Topics 1-4 → "Paper 1", Topics 5-7 → "Paper 2"
+   - AQA Chemistry: Topics 1-5 → "Paper 1", Topics 6-10 → "Paper 2"
+   - AQA Physics: Topics 1-4 → "Paper 1", Topics 5-8 → "Paper 2"
+   - Edexcel subjects often have "Paper 1" and "Paper 2" splits
+   - If a topic genuinely appears on both papers, use "Both Papers"
+   - If the subject has no paper split (e.g. purely coursework), use "Non-exam"
+3. Match the real ${data.examBoard} specification structure as closely as possible
+4. specRef values must follow the real specification numbering
+5. For Higher tier: mark Higher-only subtopics with "(H)" at the end
+6. Aim for 6-16 topics total, each with 3-8 subtopics
+7. Keep names concise but accurate to the specification`,
         },
       ],
     })
