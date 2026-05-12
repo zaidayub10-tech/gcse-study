@@ -40,7 +40,7 @@ export function TopNavClient({
   const manageActive = MANAGE_ITEMS.some((i) => isActive(i.href))
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-sidebar-border bg-sidebar/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 w-full border-b border-sidebar-border/60 bg-sidebar/80 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-sidebar/70">
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4 sm:px-6">
 
         {/* ── Logo ─────────────────────────────────────────────── */}
