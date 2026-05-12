@@ -52,6 +52,7 @@ export type SubjectFormValues = {
   examBoard: string
   specCode: string
   tier: "Higher" | "Foundation" | "Both"
+  scienceType: "none" | "combined" | "triple"
   colour: string
   hasDisciplines: boolean
   disciplines: string[]
@@ -67,11 +68,17 @@ const DEFAULT_VALUES: SubjectFormValues = {
   examBoard: "",
   specCode: "",
   tier: "Higher",
+  scienceType: "none",
   colour: "#6366f1",
   hasDisciplines: false,
   disciplines: [""],
   hasOptionPapers: false,
   optionPapers: [""],
+}
+
+const SCIENCE_SUBJECTS = ["science", "biology", "chemistry", "physics", "combined science", "triple science"]
+function isScience(name: string) {
+  return SCIENCE_SUBJECTS.some(s => name.toLowerCase().includes(s))
 }
 
 type Props = {
@@ -89,6 +96,7 @@ function SpecBuilder({
   examBoard,
   specCode,
   tier,
+  scienceType,
   onSpecGenerated,
   onSpecCodeSuggested,
 }: {
@@ -97,6 +105,7 @@ function SpecBuilder({
   examBoard: string
   specCode: string
   tier: string
+  scienceType: string
   onSpecGenerated: (topics: AiTopicRow[]) => void
   onSpecCodeSuggested: (code: string) => void
 }) {
@@ -111,7 +120,7 @@ function SpecBuilder({
     }
     setLoading(true)
     setError(null)
-    const res = await generateSubjectSpec({ name: subjectName, qualification, examBoard, specCode, tier })
+    const res = await generateSubjectSpec({ name: subjectName, qualification, examBoard, specCode, tier, scienceType })
     setLoading(false)
     if (res.error || !res.result) {
       setError(res.error ?? "Unknown error.")
@@ -494,6 +503,36 @@ export function SubjectForm({
         </div>
       </div>
 
+      {/* Science type — only shown for science subjects */}
+      {isScience(values.name) && (
+        <div className="space-y-1.5">
+          <Label>Science pathway</Label>
+          <Select
+            value={values.scienceType}
+            onValueChange={(v) => set("scienceType", v as "none" | "combined" | "triple")}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Single science (Biology / Chemistry / Physics)</SelectItem>
+              <SelectItem value="combined">Combined Science (Double Award / Trilogy)</SelectItem>
+              <SelectItem value="triple">Triple Science (Separate Sciences)</SelectItem>
+            </SelectContent>
+          </Select>
+          {values.scienceType === "combined" && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Combined Science covers Biology, Chemistry and Physics in one double award (2 GCSEs).
+            </p>
+          )}
+          {values.scienceType === "triple" && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Triple Science: Biology, Chemistry and Physics are each separate GCSEs (3 in total).
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Exam board */}
       <div className="space-y-1.5">
         <Label htmlFor="sf-board">Exam board</Label>
@@ -683,6 +722,7 @@ export function SubjectForm({
         examBoard={values.examBoard}
         specCode={values.specCode}
         tier={values.tier}
+        scienceType={values.scienceType}
         onSpecGenerated={handleSpecGenerated}
         onSpecCodeSuggested={(code) => {
           if (!values.specCode.trim()) set("specCode", code)

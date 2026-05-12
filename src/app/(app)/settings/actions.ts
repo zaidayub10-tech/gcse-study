@@ -19,7 +19,13 @@ export async function generateSubjectSpec(data: {
   examBoard: string
   specCode?: string
   tier: string
+  scienceType?: string
 }): Promise<{ result?: SpecResult; error?: string }> {
+  const scienceLabel =
+    data.scienceType === "combined" ? " Combined Science (Double Award / Trilogy)" :
+    data.scienceType === "triple"   ? " Triple Science (Separate Sciences)" :
+    ""
+
   try {
     const msg = await ai.messages.create({
       model: "claude-haiku-4-5",
@@ -28,7 +34,7 @@ export async function generateSubjectSpec(data: {
       messages: [
         {
           role: "user",
-          content: `Generate the complete topic list for ${data.qualification} ${data.name} (${data.examBoard}${data.specCode ? `, spec code: ${data.specCode}` : ""}), ${data.tier} tier.
+          content: `Generate the complete topic list for ${data.qualification}${scienceLabel} ${data.name} (${data.examBoard}${data.specCode ? `, spec code: ${data.specCode}` : ""}), ${data.tier} tier.${data.scienceType === "combined" ? "\nIMPORTANT: This is Combined Science (Double Award / Trilogy). Include all Biology, Chemistry and Physics topics as they appear in the combined spec. Group papers as Biology Paper 1, Biology Paper 2, Chemistry Paper 1, Chemistry Paper 2, Physics Paper 1, Physics Paper 2." : ""}${data.scienceType === "triple" ? "\nIMPORTANT: This is Triple Science (separate GCSE). Generate topics for this specific science only (Biology OR Chemistry OR Physics as named). Include all topics for this individual science." : ""}
 
 Respond with ONLY this JSON:
 {
