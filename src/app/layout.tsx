@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "recalledai",
+  title: "Recapr",
   description: "AI-powered GCSE revision platform",
 }
 

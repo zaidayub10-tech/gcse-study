@@ -43,7 +43,7 @@ export async function reanalyseResource(
 
     const subjectName = resource.subject.name
     const topicName   = resource.topic?.name
-    const system = `You are a GCSE study assistant for ${subjectName}${topicName ? `, topic: ${topicName}` : ""}. Produce structured revision materials. Always respond with ONLY valid JSON — no markdown, no code blocks.`
+    const system = `You are a Recapr assistant for ${subjectName}${topicName ? `, topic: ${topicName}` : ""}. Produce structured revision materials. Always respond with ONLY valid JSON — no markdown, no code blocks.`
 
     let output: ExtractionOutput
 

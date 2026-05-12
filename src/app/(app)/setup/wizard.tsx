@@ -44,7 +44,7 @@ export function SetupWizard() {
           <BookOpen className="h-8 w-8 text-primary" />
         </div>
         <div className="space-y-2 max-w-md">
-          <h1 className="text-2xl font-semibold">Welcome to GCSE Study</h1>
+          <h1 className="text-2xl font-semibold">Welcome to Recapr</h1>
           <p className="text-muted-foreground">
             Let&apos;s set up your subjects. You can add as many as you need — each one
             gets its own colour, exam board, and revision space.

@@ -51,13 +51,13 @@ export function TopNavClient({
         >
           <Image
             src="/logo-icon.png"
-            alt="recalledai logo"
+            alt="Recapr logo"
             width={32}
             height={32}
             className="h-8 w-8 object-contain"
           />
           <span className="font-bold text-sidebar-foreground text-sm tracking-tight hidden sm:block">
-            recalledai
+            Recapr
           </span>
         </Link>
 
@@ -174,12 +174,12 @@ export function TopNavClient({
           <div className="flex items-center h-14 px-4 border-b border-sidebar-border gap-2 shrink-0">
             <Image
               src="/logo-icon.png"
-              alt="recalledai logo"
+              alt="Recapr logo"
               width={32}
               height={32}
               className="h-8 w-8 object-contain"
             />
-            <span className="font-bold text-sidebar-foreground">recalledai</span>
+            <span className="font-bold text-sidebar-foreground">Recapr</span>
           </div>
 
           <ScrollArea className="h-[calc(100vh-7rem)]">

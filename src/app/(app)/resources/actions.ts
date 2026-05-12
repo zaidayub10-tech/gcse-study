@@ -50,7 +50,7 @@ const JSON_SCHEMA_PROMPT = `Respond with ONLY this JSON (no markdown, no code bl
 Rules: keyPoints 6-10 items, flashcards 8-15 cards, questions 3-6 exam-style with model answers, GCSE level throughout.`
 
 function buildSystem(subjectName: string, topicName?: string) {
-  return `You are a GCSE study assistant for ${subjectName}${topicName ? `, topic: ${topicName}` : ""}. Produce structured revision materials. Always respond with ONLY valid JSON — no markdown, no code blocks.`
+  return `You are a Recapr assistant for ${subjectName}${topicName ? `, topic: ${topicName}` : ""}. Produce structured revision materials. Always respond with ONLY valid JSON — no markdown, no code blocks.`
 }
 
 function parseAIOutput(text: string): ExtractionOutput {
