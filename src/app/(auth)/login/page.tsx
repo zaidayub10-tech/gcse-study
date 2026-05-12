@@ -13,9 +13,9 @@ export default function LoginPage() {
       <div className="w-full max-w-sm space-y-6 px-4">
         <div className="space-y-3 text-center">
           <div className="flex justify-center">
-            <Image src="/logo.png" alt="recalledai" width={56} height={56} className="h-14 w-14 object-contain" />
+            <Image src="/logo.png" alt="recalledai" width={200} height={110} className="h-20 w-auto object-contain" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">recalledai</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-muted-foreground">Welcome back</h1>
           <p className="text-sm text-muted-foreground">Enter your password to continue</p>
         </div>
 

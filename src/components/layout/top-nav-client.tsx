@@ -50,7 +50,7 @@ export function TopNavClient({
           className="flex items-center gap-2 shrink-0 mr-2 select-none"
         >
           <Image
-            src="/logo.png"
+            src="/logo-icon.png"
             alt="recalledai logo"
             width={32}
             height={32}
@@ -173,7 +173,7 @@ export function TopNavClient({
 
           <div className="flex items-center h-14 px-4 border-b border-sidebar-border gap-2 shrink-0">
             <Image
-              src="/logo.png"
+              src="/logo-icon.png"
               alt="recalledai logo"
               width={32}
               height={32}
