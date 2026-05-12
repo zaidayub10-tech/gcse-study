@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation"
+
+export const dynamic = "force-dynamic"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import { db } from "@/lib/db"

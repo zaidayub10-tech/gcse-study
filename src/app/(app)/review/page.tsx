@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { ReviewShell } from "./review-shell"
 
 export default async function ReviewPage() {

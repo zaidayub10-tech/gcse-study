@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { PlannerView } from "./planner-view"
 
 export default async function PlannerPage() {

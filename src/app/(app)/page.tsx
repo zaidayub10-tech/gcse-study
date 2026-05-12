@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { SubjectDashboard } from "./subject-dashboard"
 
 export default async function TodayPage() {

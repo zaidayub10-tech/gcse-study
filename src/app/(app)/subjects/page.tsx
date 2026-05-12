@@ -1,4 +1,6 @@
 import Link from "next/link"
+
+export const dynamic = "force-dynamic"
 import { db } from "@/lib/db"
 import { BookOpen } from "lucide-react"
 

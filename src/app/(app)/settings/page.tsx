@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { SubjectManager } from "./subject-manager"
 import { GoalsManager } from "./goals-manager"
 import { getGoals, getTodayProgress } from "./goals-actions"

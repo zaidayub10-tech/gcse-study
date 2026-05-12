@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { FocusTimer } from "./focus-timer"
 
 export default async function TimerPage() {

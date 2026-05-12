@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { listConversations } from "./tutor-actions"
 import { AITools } from "./ai-tools"
 

@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { FlashcardsShell } from "./flashcards-shell"
 
 export default async function FlashcardsPage() {

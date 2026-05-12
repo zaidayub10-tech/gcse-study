@@ -1,4 +1,6 @@
 import { db } from "@/lib/db"
+
+export const dynamic = "force-dynamic"
 import { ProgressDashboard } from "./progress-dashboard"
 
 export default async function ProgressPage() {
