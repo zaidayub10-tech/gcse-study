@@ -7,7 +7,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
-  listNotes, generateNote, deleteNote, updateNoteContent,
+  generateNote, loadNote, deleteNote, updateNoteContent,
 } from "./notes-actions"
 import type { NoteSummary, NoteFull } from "./notes-actions"
 import type { Subject, Topic } from "@/generated/prisma/client"
@@ -433,18 +433,10 @@ export function NotesShell({
   }, [])
 
   const handleSelectNote = useCallback(async (id: string) => {
-    // Check if already loaded
     if (selectedNote?.id === id) return
-    // Find summary for optimistic title
-    const summary = notes.find((n) => n.id === id)
-    if (summary) {
-      // Load full content
-      const { listNotes: _l, generateNote: _g, deleteNote: _d, updateNoteContent } = await import("./notes-actions")
-      const { loadNote } = await import("./notes-actions")
-      const res = await loadNote(id)
-      if (res.note) setSelectedNote(res.note)
-    }
-  }, [notes, selectedNote])
+    const res = await loadNote(id)
+    if (res.note) setSelectedNote(res.note)
+  }, [selectedNote])
 
   const handleDelete = useCallback(async () => {
     if (!selectedNote) return
