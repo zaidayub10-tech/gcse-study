@@ -115,6 +115,17 @@ export async function createSubjectFromSettings(
       })
     }
 
+    // Exam dates
+    if (data.examDates && data.examDates.length > 0) {
+      await db.subjectExam.createMany({
+        data: data.examDates.map((e) => ({
+          subjectId: subject.id,
+          paper: e.paper,
+          date: new Date(e.date),
+        })),
+      })
+    }
+
     // AI-generated topics + subtopics
     if (data.aiTopics && data.aiTopics.length > 0) {
       for (const [i, t] of data.aiTopics.entries()) {
@@ -179,6 +190,18 @@ export async function updateSubject(
     // Note: we do NOT touch existing topics (they may have subtopics/cards).
     // Option papers from wizard are regular topics; we can't distinguish them
     // from topics added later. The user manages topics in the subject pages.
+
+    // Sync exam dates: delete all, re-create from form data
+    await db.subjectExam.deleteMany({ where: { subjectId: id } })
+    if (data.examDates && data.examDates.length > 0) {
+      await db.subjectExam.createMany({
+        data: data.examDates.map((e) => ({
+          subjectId: id,
+          paper: e.paper,
+          date: new Date(e.date),
+        })),
+      })
+    }
 
     revalidatePath("/", "layout")
     return {}

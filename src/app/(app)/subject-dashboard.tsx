@@ -4,8 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import {
   Plus, BookOpen, Layers, ChevronRight,
-  FlaskConical, Clock, Calendar, Sparkles,
-  BarChart2, X, ArrowRight,
+  FlaskConical, Clock, Calendar, Flame,
+  X, ArrowRight,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { createSubjectFromSettings } from "./settings/actions"
@@ -25,6 +25,14 @@ type SubjectWithStats = {
 }
 
 type SessionWithRefs = Session & { subject: Subject; topic: Topic | null }
+
+type UpcomingExam = {
+  id: string
+  subjectName: string
+  subjectColour: string
+  paper: string
+  date: Date
+}
 
 function greeting() {
   const h = new Date().getHours()
@@ -52,10 +60,14 @@ export function SubjectDashboard({
   subjects,
   reviewedToday = 0,
   todaySessions = [],
+  streak = 0,
+  upcomingExams = [],
 }: {
   subjects: SubjectWithStats[]
   reviewedToday?: number
   todaySessions?: SessionWithRefs[]
+  streak?: number
+  upcomingExams?: UpcomingExam[]
 }) {
   const [showAdd, setShowAdd] = useState(false)
 
@@ -93,6 +105,13 @@ export function SubjectDashboard({
                 ? `You have ${subjects.length} subject${subjects.length !== 1 ? "s" : ""} · ${totalCards} flashcards`
                 : "Welcome to your study dashboard"}
             </p>
+            {streak > 0 && (
+              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 border border-white/20 px-3 py-1.5 backdrop-blur-sm">
+                <Flame className="h-4 w-4 text-orange-300 shrink-0" />
+                <span className="text-sm font-bold text-white">{streak}</span>
+                <span className="text-xs text-white/80">{streak === 1 ? "day streak" : "day streak"} 🔥</span>
+              </div>
+            )}
           </div>
           <button
             onClick={() => setShowAdd(true)}
@@ -126,22 +145,87 @@ export function SubjectDashboard({
 
       {/* ── Stats row ──────────────────────────────────────────── */}
       {subjects.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-2xl bg-card border border-border p-5 flex flex-col gap-3">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 flex flex-col gap-2 sm:gap-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reviewed today</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-base">✅</span>
+              <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">Reviewed</span>
+              <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-sm sm:text-base">✅</span>
             </div>
-            <p className="text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">{reviewedToday}</p>
-            <p className="text-xs text-muted-foreground">cards reviewed</p>
+            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-600 dark:text-emerald-400">{reviewedToday}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">today</p>
           </div>
-          <div className="rounded-2xl bg-card border border-border p-5 flex flex-col gap-3">
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 flex flex-col gap-2 sm:gap-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Total cards</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/30 text-base">🗂️</span>
+              <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">Streak</span>
+              <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-orange-50 dark:bg-orange-900/30">
+                <Flame className="h-4 w-4 text-orange-500" />
+              </span>
             </div>
-            <p className="text-3xl font-extrabold tracking-tight text-violet-600 dark:text-violet-400">{totalCards}</p>
-            <p className="text-xs text-muted-foreground">across all subjects</p>
+            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-orange-500 dark:text-orange-400">{streak}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">{streak === 1 ? "day" : "days"}</p>
+          </div>
+          <div className="rounded-2xl bg-card border border-border p-4 sm:p-5 flex flex-col gap-2 sm:gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">Cards</span>
+              <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-violet-50 dark:bg-violet-900/30 text-sm sm:text-base">🗂️</span>
+            </div>
+            <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-violet-600 dark:text-violet-400">{totalCards}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">total</p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Exam countdown strip ───────────────────────────────── */}
+      {upcomingExams.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="font-bold text-lg tracking-tight flex items-center gap-2">
+            📅 Upcoming exams
+          </h2>
+          <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+            {upcomingExams.map((exam) => {
+              const now = new Date()
+              const examDate = new Date(exam.date)
+              const msLeft = examDate.getTime() - now.getTime()
+              const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24))
+              const isUrgent = daysLeft <= 7
+              const isVeryUrgent = daysLeft <= 3
+
+              return (
+                <div
+                  key={exam.id}
+                  className={cn(
+                    "shrink-0 rounded-2xl border p-4 min-w-[148px] flex flex-col gap-1 transition-shadow hover:shadow-md",
+                    isVeryUrgent
+                      ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800/40"
+                      : isUrgent
+                      ? "bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800/40"
+                      : "bg-card border-border"
+                  )}
+                >
+                  {/* Colour dot + subject */}
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: exam.subjectColour }} />
+                    <p className="text-xs text-muted-foreground font-medium truncate">{exam.subjectName}</p>
+                  </div>
+                  <p className="text-sm font-bold leading-tight">{exam.paper}</p>
+                  {/* Day counter */}
+                  <p className={cn(
+                    "text-3xl font-extrabold tracking-tight mt-1",
+                    isVeryUrgent ? "text-red-600 dark:text-red-400"
+                    : isUrgent ? "text-amber-600 dark:text-amber-400"
+                    : "text-primary"
+                  )}>
+                    {daysLeft}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {daysLeft === 1 ? "day to go" : "days to go"}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                    {examDate.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                  </p>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}

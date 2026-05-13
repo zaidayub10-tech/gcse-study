@@ -29,6 +29,7 @@ model Subject {
   exams         Exam[]
   goals         Goals[]
   decks         Deck[]
+  subjectExams  SubjectExam[]
 }
 
 model Discipline {
@@ -249,4 +250,16 @@ model Goals {
   updatedAt            DateTime @updatedAt
 
   focusSubject Subject? @relation(fields: [focusSubjectId], references: [id], onDelete: SetNull)
+}
+
+// ── Exam dates ───────────────────────────────────────────────────────────────
+
+model SubjectExam {
+  id        String   @id @default(cuid())
+  subjectId String
+  paper     String   // e.g. "Paper 1", "Paper 2"
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }

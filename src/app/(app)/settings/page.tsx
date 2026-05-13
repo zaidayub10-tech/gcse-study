@@ -9,7 +9,10 @@ export default async function SettingsPage() {
   const [subjects, goals, progress] = await Promise.all([
     db.subject.findMany({
       orderBy: { name: "asc" },
-      include: { disciplines: { orderBy: { order: "asc" } } },
+      include: {
+        disciplines: { orderBy: { order: "asc" } },
+        subjectExams: { orderBy: { date: "asc" } },
+      },
     }),
     getGoals(),
     getTodayProgress(),

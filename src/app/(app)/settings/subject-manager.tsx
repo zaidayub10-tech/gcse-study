@@ -20,9 +20,9 @@ import {
   updateSubject,
   deleteSubject,
 } from "./actions"
-import type { Subject, Discipline } from "@/generated/prisma/client"
+import type { Subject, Discipline, SubjectExam } from "@/generated/prisma/client"
 
-type SubjectWithDisciplines = Subject & { disciplines: Discipline[] }
+type SubjectWithDisciplines = Subject & { disciplines: Discipline[]; subjectExams: SubjectExam[] }
 
 type View = "list" | "adding" | { editing: SubjectWithDisciplines }
 
@@ -88,6 +88,10 @@ export function SubjectManager({
       disciplines: s.disciplines.length > 0 ? s.disciplines.map((d) => d.name) : [""],
       hasOptionPapers: false,
       optionPapers: [""],
+      examDates: s.subjectExams.map((e) => ({
+        paper: e.paper,
+        date: new Date(e.date).toISOString().slice(0, 10),
+      })),
     }
     return (
       <div className="space-y-6 max-w-xl">

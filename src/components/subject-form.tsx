@@ -58,6 +58,7 @@ export type SubjectFormValues = {
   disciplines: string[]
   hasOptionPapers: boolean
   optionPapers: string[]
+  examDates: { paper: string; date: string }[]
   // AI-generated topics (only populated when user uses the spec builder)
   aiTopics?: { name: string; specRef?: string; paper?: string; subtopics: { name: string; specRef?: string }[] }[]
 }
@@ -74,6 +75,7 @@ const DEFAULT_VALUES: SubjectFormValues = {
   disciplines: [""],
   hasOptionPapers: false,
   optionPapers: [""],
+  examDates: [],
 }
 
 const SCIENCE_SUBJECTS = ["science", "biology", "chemistry", "physics", "combined science", "triple science"]
@@ -454,6 +456,7 @@ export function SubjectForm({
       specCode: values.specCode.trim(),
       disciplines: values.disciplines.filter((d) => d.trim()),
       optionPapers: values.optionPapers.filter((o) => o.trim()),
+      examDates: values.examDates.filter((e) => e.paper.trim() && e.date),
       aiTopics,
     })
     setPending(false)
@@ -717,6 +720,63 @@ export function SubjectForm({
               <Plus className="h-3 w-3 mr-1" />
               Add option
             </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Exam dates */}
+      <div className="space-y-3 rounded-lg border border-border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium">Exam dates <span className="text-muted-foreground font-normal">(optional)</span></p>
+            <p className="text-xs text-muted-foreground mt-0.5">Track countdowns to each exam paper</p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs shrink-0"
+            onClick={() => set("examDates", [...values.examDates, { paper: "", date: "" }])}
+          >
+            <Plus className="h-3 w-3 mr-1" />
+            Add paper
+          </Button>
+        </div>
+        {values.examDates.length > 0 && (
+          <div className="space-y-2">
+            {values.examDates.map((ed, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Input
+                  value={ed.paper}
+                  onChange={(e) => {
+                    const next = [...values.examDates]
+                    next[i] = { ...next[i], paper: e.target.value }
+                    set("examDates", next)
+                  }}
+                  placeholder="e.g. Paper 1, Paper 2"
+                  className="flex-1"
+                />
+                <input
+                  type="date"
+                  value={ed.date}
+                  onChange={(e) => {
+                    const next = [...values.examDates]
+                    next[i] = { ...next[i], date: e.target.value }
+                    set("examDates", next)
+                  }}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 shrink-0"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 shrink-0"
+                  onClick={() => set("examDates", values.examDates.filter((_, j) => j !== i))}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
           </div>
         )}
       </div>
