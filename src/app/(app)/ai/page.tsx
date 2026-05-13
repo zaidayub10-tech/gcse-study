@@ -23,9 +23,9 @@ export default async function AIPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">AI Tutor</h1>
+        <h1 className="text-2xl font-semibold">Tutor Rec</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Chat with your personal AI tutor, or extract and save study resources.
+          Chat with Rec, your personal tutor — explain concepts, exam technique, and more.
         </p>
       </div>
       <AITools subjects={subjects} initialConversations={initialConversations} />

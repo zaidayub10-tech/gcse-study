@@ -222,8 +222,8 @@ function SpecBuilder({
     <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-primary shrink-0" />
-        <span className="text-sm font-semibold text-primary">AI Spec Finder</span>
-        <span className="ml-auto text-xs text-muted-foreground">Powered by Claude</span>
+        <span className="text-sm font-semibold text-primary">Rec Spec Finder</span>
+        <span className="ml-auto text-xs text-muted-foreground">Powered by Rec</span>
       </div>
 
       {!topics && (

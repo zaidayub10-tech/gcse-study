@@ -261,7 +261,7 @@ function NewChatForm({
         </div>
         <h2 className="text-xl font-semibold">Start a conversation</h2>
         <p className="text-sm text-muted-foreground max-w-sm">
-          Ask your AI tutor anything — concepts, exam technique, worked examples, or past paper help.
+          Ask Rec anything — concepts, exam technique, worked examples, or past paper help.
         </p>
       </div>
 
@@ -488,7 +488,7 @@ function ChatView({
           </button>
         </div>
         <p className="text-[10px] text-muted-foreground/50 mt-1.5 text-center">
-          AI responses are for study support — always verify with your textbook and teacher.
+          Rec's responses are for study support — always verify with your textbook and teacher.
         </p>
       </div>
     </div>
@@ -817,7 +817,7 @@ export function TutorShell({
                 </button>
               </div>
               <p className="text-[10px] text-muted-foreground/50 mt-1.5 text-center">
-                AI responses are for study support — always verify with your textbook and teacher.
+                Rec's responses are for study support — always verify with your textbook and teacher.
               </p>
             </div>
           </div>

@@ -325,7 +325,7 @@ export function SubjectDashboard({
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {[
             { href: "/timer",      label: "Focus Timer",     desc: "Pomodoro sessions",   emoji: "⏱️", color: "bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 border-amber-100 dark:border-amber-800/30" },
-            { href: "/ai",         label: "AI Tutor",        desc: "Chat & get help",     emoji: "✨", color: "bg-violet-50 hover:bg-violet-100 dark:bg-violet-900/20 dark:hover:bg-violet-900/30 border-violet-100 dark:border-violet-800/30" },
+            { href: "/ai",         label: "Tutor Rec",       desc: "Explain with Rec",    emoji: "✨", color: "bg-violet-50 hover:bg-violet-100 dark:bg-violet-900/20 dark:hover:bg-violet-900/30 border-violet-100 dark:border-violet-800/30" },
             { href: "/flashcards", label: "Flashcards",      desc: "Browse all decks",    emoji: "🗂️", color: "bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 border-blue-100 dark:border-blue-800/30" },
             { href: "/progress",   label: "Progress",        desc: "View your stats",     emoji: "📊", color: "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800/30" },
             { href: "/resources",  label: "Study Extractor", desc: "Extract & save notes", emoji: "📚", color: "bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30 border-rose-100 dark:border-rose-800/30" },

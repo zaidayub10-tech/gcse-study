@@ -24,7 +24,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Today",      href: "/",          icon: LayoutDashboard, group: "study" },
   { label: "Review",     href: "/review",    icon: BookOpen,        group: "study" },
   { label: "Flashcards", href: "/flashcards", icon: Layers,         group: "study" },
-  { label: "AI Tutor",        href: "/ai",        icon: Sparkles,      group: "study" },
+  { label: "Tutor Rec",       href: "/ai",        icon: Sparkles,      group: "study" },
   { label: "Study Extractor", href: "/resources", icon: FlaskConical,  group: "study" },
   { label: "Subjects",   href: "/subjects",  icon: Library,         group: "manage" },
   { label: "Resources",  href: "/resources", icon: Link2,           group: "manage" },

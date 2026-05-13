@@ -113,7 +113,7 @@ export function FlashcardGenerator({
   return (
     <div className="space-y-4 max-w-2xl">
       <p className="text-sm text-muted-foreground">
-        Paste your notes or pick an extracted resource, and AI will generate flashcards for you.
+        Paste your notes or pick an extracted resource, and Rec will generate flashcards for you.
       </p>
 
       {/* Subject / Topic */}
