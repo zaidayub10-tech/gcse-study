@@ -30,6 +30,7 @@ model Subject {
   goals         Goals[]
   decks         Deck[]
   subjectExams  SubjectExam[]
+  notes         Note[]
 }
 
 model Discipline {
@@ -57,6 +58,7 @@ model Topic {
   timerLogs     TimerLog[]
   conversations Conversation[]
   resources     Resource[]
+  notes         Note[]
 }
 
 model Subtopic {
@@ -69,6 +71,7 @@ model Subtopic {
   topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
   decks     Deck[]
   resources Resource[]
+  notes     Note[]
 }
 
 // ── Flashcard system ─────────────────────────────────────────────────────────
@@ -250,6 +253,23 @@ model Goals {
   updatedAt            DateTime @updatedAt
 
   focusSubject Subject? @relation(fields: [focusSubjectId], references: [id], onDelete: SetNull)
+}
+
+// ── Notes ────────────────────────────────────────────────────────────────────
+
+model Note {
+  id         String   @id @default(cuid())
+  subjectId  String
+  topicId    String?
+  subtopicId String?
+  title      String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  subject  Subject   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  topic    Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  subtopic Subtopic? @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
 }
 
 // ── Exam dates ───────────────────────────────────────────────────────────────

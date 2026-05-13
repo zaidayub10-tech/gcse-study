@@ -2,10 +2,11 @@ import { db } from "@/lib/db"
 
 export const dynamic = "force-dynamic"
 import { listConversations } from "./tutor-actions"
+import { listNotes } from "./notes-actions"
 import { AITools } from "./ai-tools"
 
 export default async function AIPage() {
-  const [subjects, initialConversations] = await Promise.all([
+  const [subjects, initialConversations, initialNotes] = await Promise.all([
     db.subject.findMany({
       orderBy: { name: "asc" },
       include: {
@@ -18,6 +19,7 @@ export default async function AIPage() {
       },
     }),
     listConversations(),
+    listNotes(),
   ])
 
   return (
@@ -28,7 +30,7 @@ export default async function AIPage() {
           Chat with Rec, your personal tutor — explain concepts, exam technique, and more.
         </p>
       </div>
-      <AITools subjects={subjects} initialConversations={initialConversations} />
+      <AITools subjects={subjects} initialConversations={initialConversations} initialNotes={initialNotes} />
     </div>
   )
 }
